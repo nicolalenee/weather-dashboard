@@ -1,0 +1,21 @@
+.favorable {
+  background-color: green;
+  color: white;
+}
+.moderate {
+  background-color: yellow;
+  color: white;
+}
+.severe {
+  background-color: red;
+  color: white;
+}
+.img-container {
+  width: 2%;
+}
+.img-size {
+  width: 100%;
+}
+.sidebar {
+  height: 100%;
+}
