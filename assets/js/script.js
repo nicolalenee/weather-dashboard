@@ -66,7 +66,7 @@ var getForecast = function (latitude, longitude) {
     }
   })
   .catch(function(error) {
-    alert("Unable to connect to Open Weather. Try Again later.")
+    alert("Unable to connect to Open Weather. Try Again later." + error)
   })
 }
 
@@ -81,13 +81,13 @@ var displayTodaysForecast = function(forecast) {
   // create container 
   var todayContainerEl = $("<article>")
   .attr("id", "today")
-  .addClass("today border p-2")
+  .addClass("today p-2 thick-border")
 
 
   // create header element
   var cityName = $("#searchterm").val();
   var headerEl = $("<h2>")
-  .addClass("font-weight-bold city-name-header text-capitalize")
+  .addClass("font-weight-bold city-name-header text-capitalize blue-text")
   .text(cityName)
   // create date element
   var dateEl = $("<span>")
@@ -161,14 +161,13 @@ var displayFiveDayForecast = function(forecast) {
   .attr("id", "five-day")
   .addClass("five-day-container row d-flex justify-content-around mb-3 mt-3")
   var forecastHeaderEl = $("<h3>")
-  .addClass("font-weight-bold w-100 ml-3")
+  .addClass("font-weight-bold w-100 ml-3 blue-text")
   .text("5-Day Forecast")
   $(forecastContainerEl).append(forecastHeaderEl)
 
   // for loop that creates elements for the upcoming five day forecast
   for (i = 0; i < 5; i++) {
     // increment the date on each loop
-    console.log(counter)
     forecastDate = moment(date).add(counter, 'days');
     forecastDateDisplay = moment(forecastDate).format("MM/D/YYYY");
     counter++;
@@ -181,11 +180,11 @@ var displayFiveDayForecast = function(forecast) {
 
     // create the card for each day
     var dayCard = $("<div>")
-    .addClass("card text-left p-2 mr-3")
+    .addClass("card text-left p-2 mr-3 small-gradient")
 
 
     var dateEl = $("<p>")
-    .addClass("forecast-date font-weight-bold")
+    .addClass("forecast-date font-weight-bold text-light")
     .text(forecastDateDisplay);
 
 
@@ -197,15 +196,15 @@ var displayFiveDayForecast = function(forecast) {
     .attr("src", iconSrc)
     
     var tempEl = $("<p>")
-    .addClass("forecast-temp")
+    .addClass("forecast-temp text-light")
     .text("Temp: " + temp + "° F")
 
     var windEl = $("<p>")
-    .addClass("forecast-wind")
+    .addClass("forecast-wind text-light")
     .text("Wind: " + wind + " MPH");
 
     var humidityEl = $("<p>")
-    .addClass("forecast-humidity")
+    .addClass("forecast-humidity text-light")
     .text("Humidity: " + humidity + "%")
 
     //append to the card
@@ -224,17 +223,35 @@ var createSearchHistoryButton = function (event) {
   // create button
   var searchTerm = $("#searchterm").val();
   var historyButton = $("<button>")
-  .attr("type", "button")
-  .addClass("history-button btn btn-secondary mb-1 text-capitalize")
+  .attr("type", "submit")
+  .addClass("history-button btn btn-secondary mb-1 text-capitalize light-grey ")
   .text(searchTerm);
 
   //append to the search History
   $("#search-history").append(historyButton)
 }
 
+var buttonHandler = function() {
+  var newSearchTerm = $(this).text();
+  var replacedText = $("#searchterm").val();
+  replacedText = newSearchTerm;
 
+};
+
+// function to handle resubmission
+var buttonClickHandler = function () {
+  // remove text from searchbox
+  $("#searchterm").val('');
+  // replace with button text
+  var newSearch = $(this).text();
+  $("#searchterm").val(newSearch);
+  formSubmitHandler(event);
+  
+}
 
 // event handlers
 $("#search-form").on("submit", formSubmitHandler);
 
 $("#search-form").on("submit", createSearchHistoryButton);
+
+$("#search-history").on("click", "button", buttonClickHandler);

@@ -1,3 +1,24 @@
+/*custom stylings*/ 
+.gradient {
+  background: rgb(246,202,230);
+  background: linear-gradient(90deg, rgba(246,202,230,1) 0%, rgba(242,123,187,1) 39%, rgba(157,168,238,1) 100%);
+}
+.blue-text {
+  color: #94bbe9;
+}
+.light-grey {
+  background: #CCCCCC;
+}
+.small-gradient {
+  background: rgb(238,174,202);
+  background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+}
+.thick-border {
+  border: 3px solid #94bbe9;
+}
+.nice-border {
+  border: 1px solid #C25996;
+}
 .favorable {
   background-color: green;
   color: white;
