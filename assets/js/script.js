@@ -1,10 +1,14 @@
+// global variables
 let latitude;
 let longitude;
 let counter = 1;
-// open weather api key 
 var apiKey = "de4084fe21aab085a9b43a06f4ecd035";
 let date = moment();
 let dateDisplay = moment().format("MM/D/YYYY");
+
+$("document").ready(function() {
+  loadSearchHistory();
+});
 
 var formSubmitHandler = function(event) {
   // prevent page refresh after form submission
@@ -14,10 +18,9 @@ var formSubmitHandler = function(event) {
 
   if (city) {
     getCoordinates(city);
-    // clear form data
-    $(city).val("");
     // reset display
     $("#forecasts").text("");
+    
   } else {
     alert("Please enter a city!")
   }
@@ -41,6 +44,7 @@ var getCoordinates = function(city) {
       });
     } else {
       alert("Error: " + response.statusText);
+      $("#searchterm").val('');
     }
   })
   .catch(function(error) {
@@ -63,6 +67,7 @@ var getForecast = function (latitude, longitude) {
       })
     } else {
       alert("Error: " + response.statusText);
+      $("#searchterm").text('');
     }
   })
   .catch(function(error) {
@@ -80,69 +85,70 @@ var displayTodaysForecast = function(forecast) {
 
   // create container 
   var todayContainerEl = $("<article>")
-  .attr("id", "today")
-  .addClass("today p-2 thick-border")
+    .attr("id", "today")
+    .addClass("today p-2 thick-border")
 
 
   // create header element
   var cityName = $("#searchterm").val();
   var headerEl = $("<h2>")
-  .addClass("font-weight-bold city-name-header text-capitalize blue-text")
-  .text(cityName)
+    .addClass("font-weight-bold city-name-header text-capitalize blue-text")
+    .text(cityName)
   // create date element
   var dateEl = $("<span>")
-  .addClass("font-weight-bold date-header ml-2 mr-2")
-  .text(dateDisplay);
+    .addClass("font-weight-bold date-header ml-2 mr-2")
+    .text(dateDisplay);
 
   var icon = forecast.current.weather[0].icon;
   var iconSrc = "http://openweathermap.org/img/w/" + icon + ".png"; 
 
   var iconContainer = $("<div>")
-  .addClass("lg-img-container d-inline-block")
+    .addClass("lg-img-container d-inline-block")
 
   var iconEl = $("<img>")
-  .addClass("img-size")
-  .attr("src", iconSrc)
+    .addClass("img-size")
+    .attr("src", iconSrc)
 
   // create temperature element
   var temperature = forecast.current.temp;
   var tempEl = $("<p>")
-  .addClass("temperature")
-  .text("Temp: " + temperature + "° F");
+    .addClass("temperature")
+    .text("Temp: " + temperature + "° F");
 
 
   // create humidity p element
   var humidity = forecast.current.humidity;
   var humidityEl = $("<p>")
-  .addClass("humidity")
-  .text("Humidity: " + humidity + "%");
+    .addClass("humidity")
+    .text("Humidity: " + humidity + "%");
 
   // create wind speed p element
   var windSpeed = forecast.current.wind_speed;
   var windSpeedEl = $("<p>")
-  .addClass("wind-speed")
-  .text("Wind: " + windSpeed + " MPH");
+    .addClass("wind-speed")
+    .text("Wind: " + windSpeed + " MPH");
 
   // create uv index span elements
   var uvIndexLabel = $("<span>")
-  .text("UV Index: ");
+    .text("UV Index: ");
+
   var uvIndex = forecast.current.uvi;
 
   if (uvIndex <= 2) {
     // if uv index is favorable, change the span background to green
     var uvIndexEl = $("<span>")
-    .addClass("uv-index p-1 rounded favorable")
-    .text(uvIndex);
+      .addClass("uv-index p-1 rounded favorable")
+      .text(uvIndex);
   } else if (uvIndex >= 3 && uvIndex <= 7) {
     // if uv index is moderate, change the span background to yellow
     var uvIndexEl = $("<span>")
-    .addClass("uv-index p-1 rounded moderate")
-    .text(uvIndex);
+      .addClass("uv-index p-1 rounded moderate")
+      .text(uvIndex);
   } else if (uvIndex >= 8) {
     // if uv index is severe, change the span background to red
     var uvIndexEl = $("<span>")
-    .addClass("uv-index p-1 rounded severe")
-    .text(uvIndex);
+      .addClass("uv-index p-1 rounded severe")
+      .text(uvIndex);
   }
 
   // append elements
@@ -158,15 +164,17 @@ var displayTodaysForecast = function(forecast) {
 var displayFiveDayForecast = function(forecast) {
   // create container
   var forecastContainerEl = $("<article>")
-  .attr("id", "five-day")
-  .addClass("five-day-container row d-flex justify-content-around mb-3 mt-3")
+    .attr("id", "five-day")
+    .addClass("five-day-container row d-flex justify-content-around mb-3 mt-3");
+
   var forecastHeaderEl = $("<h3>")
-  .addClass("font-weight-bold w-100 ml-3 blue-text")
-  .text("5-Day Forecast")
+    .addClass("font-weight-bold w-100 ml-3 blue-text")
+    .text("5-Day Forecast");
+
   $(forecastContainerEl).append(forecastHeaderEl)
 
   // for loop that creates elements for the upcoming five day forecast
-  for (i = 0; i < 5; i++) {
+  for (var i = 0; i < 5; i++) {
     // increment the date on each loop
     forecastDate = moment(date).add(counter, 'days');
     forecastDateDisplay = moment(forecastDate).format("MM/D/YYYY");
@@ -180,32 +188,32 @@ var displayFiveDayForecast = function(forecast) {
 
     // create the card for each day
     var dayCard = $("<div>")
-    .addClass("card text-left p-2 mr-3 small-gradient")
+      .addClass("card text-left p-2 mr-3 small-gradient")
 
 
     var dateEl = $("<p>")
-    .addClass("forecast-date font-weight-bold text-light")
-    .text(forecastDateDisplay);
+      .addClass("forecast-date font-weight-bold text-light")
+      .text(forecastDateDisplay);
 
 
     var iconEl = $("<div>")
-    .attr("id", "icon-container")
+      .attr("id", "icon-container")
 
     var imgEl = $("<img>")
-    .attr("id", "icon")
-    .attr("src", iconSrc)
+      .attr("id", "icon")
+      .attr("src", iconSrc)
     
     var tempEl = $("<p>")
-    .addClass("forecast-temp text-light")
-    .text("Temp: " + temp + "° F")
+      .addClass("forecast-temp text-light")
+      .text("Temp: " + temp + "° F")
 
     var windEl = $("<p>")
-    .addClass("forecast-wind text-light")
-    .text("Wind: " + wind + " MPH");
+      .addClass("forecast-wind text-light")
+      .text("Wind: " + wind + " MPH");
 
     var humidityEl = $("<p>")
-    .addClass("forecast-humidity text-light")
-    .text("Humidity: " + humidity + "%")
+      .addClass("forecast-humidity text-light")
+      .text("Humidity: " + humidity + "%")
 
     //append to the card
     $(iconEl).append(imgEl);
@@ -221,22 +229,26 @@ var displayFiveDayForecast = function(forecast) {
 // function that creates search history button elements
 var createSearchHistoryButton = function (event) {
   // create button
-  var searchTerm = $("#searchterm").val();
+  var searchKeyword = $(".search-keyword").val();
   var historyButton = $("<button>")
-  .attr("type", "submit")
-  .addClass("history-button btn btn-secondary mb-1 text-capitalize light-grey ")
-  .text(searchTerm);
+    .attr("type", "submit")
+    .addClass("history-button btn btn-secondary mb-1 text-capitalize light-grey")
+    .attr("id", `${searchKeyword}`)
+    .text(searchKeyword);
 
-  //append to the search History
-  $("#search-history").append(historyButton)
+  // append to the search History
+  $("#search-history").append(historyButton);
+  saveHistory();
 }
 
-var buttonHandler = function() {
-  var newSearchTerm = $(this).text();
-  var replacedText = $("#searchterm").val();
-  replacedText = newSearchTerm;
-
-};
+// save to localStorage
+var saveHistory = function () {
+  let searchHistory = $("#search-history").children();
+  for (j = 1; j < searchHistory.length; j++) {
+    var keyword = searchHistory[j].textContent;
+    localStorage.setItem(`Previous Search #${[j]}`, keyword);
+  }
+}
 
 // function to handle resubmission
 var buttonClickHandler = function () {
@@ -248,6 +260,9 @@ var buttonClickHandler = function () {
   formSubmitHandler(event);
   
 }
+
+
+//
 
 // event handlers
 $("#search-form").on("submit", formSubmitHandler);
