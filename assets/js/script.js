@@ -1,7 +1,10 @@
 let latitude;
 let longitude;
+let counter = 1;
 // open weather api key 
 var apiKey = "de4084fe21aab085a9b43a06f4ecd035";
+let date = moment();
+let dateDisplay = moment().format("MM/D/YYYY");
 
 var formSubmitHandler = function(event) {
   // prevent page refresh after form submission
@@ -12,7 +15,7 @@ var formSubmitHandler = function(event) {
   if (city) {
     getCoordinates(city);
     // clear form data
-    $(city).text("");
+    $(city).val("");
     // reset display
     $("#forecasts").text("");
   } else {
@@ -86,6 +89,20 @@ var displayTodaysForecast = function(forecast) {
   var headerEl = $("<h2>")
   .addClass("font-weight-bold city-name-header text-capitalize")
   .text(cityName)
+  // create date element
+  var dateEl = $("<span>")
+  .addClass("font-weight-bold date-header ml-2 mr-2")
+  .text(dateDisplay);
+
+  var icon = forecast.current.weather[0].icon;
+  var iconSrc = "http://openweathermap.org/img/w/" + icon + ".png"; 
+
+  var iconContainer = $("<div>")
+  .addClass("lg-img-container d-inline-block")
+
+  var iconEl = $("<img>")
+  .addClass("img-size")
+  .attr("src", iconSrc)
 
   // create temperature element
   var temperature = forecast.current.temp;
@@ -129,7 +146,11 @@ var displayTodaysForecast = function(forecast) {
   }
 
   // append elements
+
+  $(dateEl).append(iconContainer)
+  $(iconContainer).append(iconEl);
   $("#forecasts").append(todayContainerEl);
+  $(headerEl).append(dateEl)
   $(todayContainerEl).append(headerEl, tempEl, humidityEl, windSpeedEl, uvIndexLabel, uvIndexEl);
 };
 
@@ -140,10 +161,18 @@ var displayFiveDayForecast = function(forecast) {
   .attr("id", "five-day")
   .addClass("five-day-container row d-flex justify-content-around mb-3 mt-3")
   var forecastHeaderEl = $("<h3>")
-  .addClass("font-weight-bold")
+  .addClass("font-weight-bold w-100 ml-3")
+  .text("5-Day Forecast")
+  $(forecastContainerEl).append(forecastHeaderEl)
 
   // for loop that creates elements for the upcoming five day forecast
   for (i = 0; i < 5; i++) {
+    // increment the date on each loop
+    console.log(counter)
+    forecastDate = moment(date).add(counter, 'days');
+    forecastDateDisplay = moment(forecastDate).format("MM/D/YYYY");
+    counter++;
+    // set variables for card information
     var temp = forecast.daily[i].temp.day;
     var wind = forecast.daily[i].wind_speed;
     var humidity = forecast.daily[i].humidity;
@@ -152,7 +181,12 @@ var displayFiveDayForecast = function(forecast) {
 
     // create the card for each day
     var dayCard = $("<div>")
-    .addClass("card text-left p-3 mr-3")
+    .addClass("card text-left p-2 mr-3")
+
+
+    var dateEl = $("<p>")
+    .addClass("forecast-date font-weight-bold")
+    .text(forecastDateDisplay);
 
 
     var iconEl = $("<div>")
@@ -176,12 +210,13 @@ var displayFiveDayForecast = function(forecast) {
 
     //append to the card
     $(iconEl).append(imgEl);
-    $(dayCard).append(iconEl, tempEl, windEl, humidityEl);
+    $(dayCard).append(dateEl,iconEl, tempEl, windEl, humidityEl);
     // append to the container
     $(forecastContainerEl).append(dayCard)
   }
+  counter = 1;
   // append elements
-  $("#forecasts").append(forecastContainerEl)
+  $("#forecasts").append(forecastContainerEl);
 };
 
 // function that creates search history button elements
@@ -203,7 +238,3 @@ var createSearchHistoryButton = function (event) {
 $("#search-form").on("submit", formSubmitHandler);
 
 $("#search-form").on("submit", createSearchHistoryButton);
-
-$("#search-history").on("click", "button", function(keyword) {
-  console.log($(this))
-})

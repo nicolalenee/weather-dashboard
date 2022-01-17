@@ -16,6 +16,9 @@
 .img-size {
   width: 100%;
 }
+.lg-img-container {
+  width: 4%;
+}
 .sidebar {
   height: 100%;
 }
